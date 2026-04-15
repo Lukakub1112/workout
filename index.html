@@ -27,10 +27,8 @@
       --radius: 14px;
     }
 
-    /* FIX: lock both axes on html to prevent iOS horizontal drift */
     html {
-      overflow-x: hidden;
-      overflow-y: scroll;
+      overflow: hidden;
       height: 100%;
       background: var(--bg);
     }
@@ -38,8 +36,12 @@
     body {
       max-width: 430px;
       margin: 0 auto;
-      min-height: 100%;
-      overflow-x: hidden; /* belt AND suspenders */
+      height: 100%;
+      overflow-x: hidden;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-x: none;
+      touch-action: pan-y;
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
       -webkit-font-smoothing: antialiased;
@@ -47,7 +49,6 @@
       position: relative;
     }
 
-    /* ─── HEADER ─── */
     .header {
       padding: max(env(safe-area-inset-top), 16px) 16px 12px;
       position: sticky;
@@ -70,7 +71,6 @@
       letter-spacing: -0.5px;
     }
 
-    /* ─── SPLIT SELECTOR ─── */
     .split-selector {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -88,24 +88,20 @@
       font-weight: 600;
       cursor: pointer;
       text-align: center;
-      transition: all 0.15s ease;
       -webkit-tap-highlight-color: transparent;
     }
 
     .split-btn .split-icon { display: block; font-size: 18px; margin-bottom: 3px; }
-
     .split-btn.active-push { background: var(--push); border-color: var(--push); color: #fff; }
     .split-btn.active-pull { background: var(--pull); border-color: var(--pull); color: #fff; }
     .split-btn.active-legs { background: var(--legs); border-color: var(--legs); color: #052e16; }
     .split-btn.active-rest { background: var(--rest); border-color: var(--rest); color: #fff; }
 
-    /* ─── SCROLLABLE CONTENT ─── */
     .content {
       padding: 12px 16px 140px;
       width: 100%;
     }
 
-    /* ─── EXERCISE CARD ─── */
     .exercise-card {
       background: var(--surface);
       border-radius: var(--radius);
@@ -125,7 +121,7 @@
       font-size: 16px;
       font-weight: 600;
       flex: 1;
-      min-width: 0; /* prevent flex overflow */
+      min-width: 0;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -184,7 +180,6 @@
       font-weight: 500;
     }
 
-    /* ─── SETS ─── */
     .sets-container {
       padding: 0 14px 4px;
       width: 100%;
@@ -212,11 +207,10 @@
       align-items: center;
       gap: 4px;
       flex: 1;
-      min-width: 0; /* FIX: critical for flex overflow prevention on iOS */
+      min-width: 0;
     }
 
     .set-input {
-      /* FIX: min-width:0 + width:0 lets flex fully control the size */
       min-width: 0;
       width: 0;
       flex: 1;
@@ -225,7 +219,7 @@
       border-radius: 9px;
       padding: 9px 4px;
       color: var(--text);
-      font-size: 16px; /* ≥16px prevents iOS auto-zoom on focus */
+      font-size: 16px;
       text-align: center;
       -webkit-appearance: none;
       appearance: none;
@@ -269,7 +263,6 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    /* ─── ADD EXERCISE ─── */
     .add-exercise-btn {
       width: 100%;
       padding: 16px;
@@ -283,17 +276,11 @@
       margin-bottom: 10px;
     }
 
-    /* ─── EMPTY / REST STATES ─── */
-    .centered-state {
-      text-align: center;
-      padding: 60px 32px;
-    }
-
+    .centered-state { text-align: center; padding: 60px 32px; }
     .state-icon { font-size: 56px; margin-bottom: 16px; display: block; }
     .state-title { font-size: 20px; font-weight: 600; margin-bottom: 8px; }
     .state-sub { color: var(--text2); font-size: 14px; line-height: 1.5; }
 
-    /* ─── SHEETS (bottom modal) ─── */
     .overlay {
       position: fixed;
       inset: 0;
@@ -352,36 +339,26 @@
     .sheet-actions { display: flex; gap: 10px; }
 
     .btn-cancel {
-      flex: 1;
-      padding: 13px;
-      background: var(--surface2);
-      border: none;
-      border-radius: 12px;
-      color: var(--text2);
-      font-size: 16px;
-      cursor: pointer;
+      flex: 1; padding: 13px;
+      background: var(--surface2); border: none;
+      border-radius: 12px; color: var(--text2);
+      font-size: 16px; cursor: pointer;
     }
 
     .btn-confirm {
-      flex: 1;
-      padding: 13px;
-      background: #f0f0f0;
-      border: none;
-      border-radius: 12px;
-      color: #000;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
+      flex: 1; padding: 13px;
+      background: #f0f0f0; border: none;
+      border-radius: 12px; color: #000;
+      font-size: 16px; font-weight: 600; cursor: pointer;
     }
 
-    /* ─── TAB BAR ─── */
+    /* TAB BAR — no transform, avoids iOS horizontal scroll bug */
     .tabbar {
       position: fixed;
       bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
+      left: 0;
+      right: 0;
       width: 100%;
-      max-width: 430px;
       background: rgba(15,15,15,0.96);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
@@ -404,17 +381,14 @@
       font-size: 10px;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
-      transition: color 0.15s;
     }
 
     .tab-btn .tab-icon { font-size: 22px; display: block; }
     .tab-btn.active { color: #fff; }
 
-    /* ─── PANELS ─── */
     .panel { display: none; width: 100%; }
     .panel.active { display: block; }
 
-    /* ─── CALENDAR ─── */
     .cal-nav {
       display: flex;
       align-items: center;
@@ -426,8 +400,7 @@
       background: var(--surface);
       border: none;
       color: var(--text);
-      width: 36px;
-      height: 36px;
+      width: 36px; height: 36px;
       border-radius: 50%;
       font-size: 20px;
       cursor: pointer;
@@ -446,14 +419,7 @@
       flex-wrap: wrap;
     }
 
-    .leg-item {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 12px;
-      color: var(--text2);
-    }
-
+    .leg-item { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text2); }
     .leg-dot { width: 10px; height: 10px; border-radius: 50%; }
 
     .cal-grid {
@@ -491,7 +457,6 @@
     .cal-cell.future  { color: var(--border); pointer-events: none; }
     .cal-cell.selected { box-shadow: 0 0 0 2px var(--text2); }
 
-    /* ─── HISTORY DETAIL (editable) ─── */
     .hist-detail {
       margin: 12px 16px 100px;
       display: none;
@@ -504,10 +469,7 @@
       margin-bottom: 10px;
     }
 
-    .hist-detail-title {
-      font-size: 16px;
-      font-weight: 600;
-    }
+    .hist-detail-title { font-size: 16px; font-weight: 600; }
 
     .hist-type-badge {
       font-size: 12px;
@@ -517,7 +479,6 @@
       background: var(--surface2);
     }
 
-    /* ─── PROGRESS ─── */
     .prog-select-wrap { padding: 12px 16px 0; }
 
     .prog-select {
@@ -550,62 +511,42 @@
       padding: 10px 16px 0;
     }
 
-    .stat-box {
-      background: var(--surface);
-      border-radius: 12px;
-      padding: 14px 10px;
-      text-align: center;
-    }
-
+    .stat-box { background: var(--surface); border-radius: 12px; padding: 14px 10px; text-align: center; }
     .stat-val { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
     .stat-lbl { font-size: 11px; color: var(--text2); margin-top: 2px; }
 
-    .prog-empty {
-      text-align: center;
-      padding: 40px 24px;
-      color: var(--text2);
-      font-size: 14px;
-    }
+    .prog-empty { text-align: center; padding: 40px 24px; color: var(--text2); font-size: 14px; }
 
-    /* ─── UTILS ─── */
     .divider { height: 1px; background: var(--border); margin: 0 14px; }
   </style>
 </head>
 <body>
 
-<!-- TODAY PANEL -->
+<!-- TODAY -->
 <div id="panel-today" class="panel active">
   <div class="header">
     <div class="header-eyebrow" id="today-date"></div>
     <div class="header-title">Today's Workout</div>
   </div>
   <div class="split-selector">
-    <button class="split-btn" data-type="Push" onclick="selectType('Push')">
-      <span class="split-icon">🔵</span>Push
-    </button>
-    <button class="split-btn" data-type="Pull" onclick="selectType('Pull')">
-      <span class="split-icon">🔴</span>Pull
-    </button>
-    <button class="split-btn" data-type="Legs" onclick="selectType('Legs')">
-      <span class="split-icon">🟢</span>Legs
-    </button>
-    <button class="split-btn" data-type="Rest" onclick="selectType('Rest')">
-      <span class="split-icon">😴</span>Rest
-    </button>
+    <button class="split-btn" data-type="Push" onclick="selectType('Push')"><span class="split-icon">🔵</span>Push</button>
+    <button class="split-btn" data-type="Pull" onclick="selectType('Pull')"><span class="split-icon">🔴</span>Pull</button>
+    <button class="split-btn" data-type="Legs" onclick="selectType('Legs')"><span class="split-icon">🟢</span>Legs</button>
+    <button class="split-btn" data-type="Rest" onclick="selectType('Rest')"><span class="split-icon">😴</span>Rest</button>
   </div>
   <div class="content" id="today-content"></div>
 </div>
 
-<!-- HISTORY PANEL -->
+<!-- HISTORY -->
 <div id="panel-history" class="panel">
   <div class="header">
     <div class="header-eyebrow">Your Training</div>
     <div class="header-title">History</div>
   </div>
   <div class="cal-nav">
-    <button class="cal-arrow" onclick="changeMonth(-1)">‹</button>
+    <button class="cal-arrow" onclick="changeMonth(-1)">&#8249;</button>
     <div class="cal-month" id="cal-month-label"></div>
-    <button class="cal-arrow" onclick="changeMonth(1)">›</button>
+    <button class="cal-arrow" onclick="changeMonth(1)">&#8250;</button>
   </div>
   <div class="cal-legend">
     <div class="leg-item"><div class="leg-dot" style="background:var(--push)"></div>Push</div>
@@ -614,7 +555,6 @@
     <div class="leg-item"><div class="leg-dot" style="background:var(--surface2);border:1px solid var(--border)"></div>Rest</div>
   </div>
   <div class="cal-grid" id="cal-grid"></div>
-  <!-- Editable detail below calendar -->
   <div class="hist-detail" id="hist-detail">
     <div class="hist-detail-header">
       <div class="hist-detail-title" id="hist-detail-title"></div>
@@ -624,7 +564,7 @@
   </div>
 </div>
 
-<!-- PROGRESS PANEL -->
+<!-- PROGRESS -->
 <div id="panel-progress" class="panel">
   <div class="header">
     <div class="header-eyebrow">Weight Over Time</div>
@@ -632,13 +572,11 @@
   </div>
   <div class="prog-select-wrap">
     <select class="prog-select" id="prog-select" onchange="renderProgress()">
-      <option value="">Select an exercise…</option>
+      <option value="">Select an exercise...</option>
     </select>
   </div>
   <div class="chart-wrap">
-    <div class="chart-box">
-      <canvas id="prog-chart"></canvas>
-    </div>
+    <div class="chart-box"><canvas id="prog-chart"></canvas></div>
   </div>
   <div class="stats-row" id="prog-stats"></div>
   <div class="prog-empty" id="prog-empty" style="display:none">No data yet for this exercise.</div>
@@ -646,15 +584,9 @@
 
 <!-- TAB BAR -->
 <nav class="tabbar">
-  <button class="tab-btn active" onclick="switchTab('today',this)">
-    <span class="tab-icon">💪</span>Today
-  </button>
-  <button class="tab-btn" onclick="switchTab('history',this)">
-    <span class="tab-icon">📅</span>History
-  </button>
-  <button class="tab-btn" onclick="switchTab('progress',this)">
-    <span class="tab-icon">📈</span>Progress
-  </button>
+  <button class="tab-btn active" onclick="switchTab('today',this)"><span class="tab-icon">&#x1F4AA;</span>Today</button>
+  <button class="tab-btn" onclick="switchTab('history',this)"><span class="tab-icon">&#x1F4C5;</span>History</button>
+  <button class="tab-btn" onclick="switchTab('progress',this)"><span class="tab-icon">&#x1F4C8;</span>Progress</button>
 </nav>
 
 <!-- ADD EXERCISE SHEET -->
@@ -671,7 +603,7 @@
   </div>
 </div>
 
-<!-- RENAME EXERCISE SHEET -->
+<!-- RENAME SHEET -->
 <div class="overlay hidden" id="rename-overlay" onclick="overlayBgTap(event,'rename-overlay')">
   <div class="sheet">
     <div class="sheet-title">Rename Exercise</div>
@@ -685,64 +617,48 @@
 </div>
 
 <script>
-// ═══════════════════════════════════════════
-// DATA
-// ═══════════════════════════════════════════
-const STORAGE_KEY = 'gymlog_v2';
-
+// ── DATA ──────────────────────────────────────────────────
+const KEY = 'gymlog_v2';
 function load() {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || { workouts: {} }; }
-  catch { return { workouts: {} }; }
+  try { return JSON.parse(localStorage.getItem(KEY)) || { workouts:{} }; }
+  catch { return { workouts:{} }; }
 }
-
-function save(data) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-}
+function save(d) { localStorage.setItem(KEY, JSON.stringify(d)); }
 
 function todayStr() {
   const d = new Date();
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
-
-function fmtDate(str) {
-  const [y,m,d] = str.split('-').map(Number);
-  return new Date(y, m-1, d).toLocaleDateString('en-US', { month:'short', day:'numeric' });
+function fmtDate(s) {
+  const [y,m,d] = s.split('-').map(Number);
+  return new Date(y,m-1,d).toLocaleDateString('en-US',{month:'short',day:'numeric'});
 }
 
 const TODAY = todayStr();
 
-// ═══════════════════════════════════════════
-// ACTIVE EDITING CONTEXT
-// _ad = the date currently being edited/rendered
-// _ac = the container ID to re-render into after mutations
-// ═══════════════════════════════════════════
-let _ad = TODAY;           // active date
-let _ac = 'today-content'; // active container
+// ── ACTIVE EDITING CONTEXT ────────────────────────────────
+// _ad = which date we're currently editing, _ac = which container
+let _ad = TODAY, _ac = 'today-content';
 
-// ═══════════════════════════════════════════
-// EXERCISE SUGGESTIONS
-// ═══════════════════════════════════════════
-const PUSH_EX = ['Bench Press','Incline Bench Press','Overhead Press','Dumbbell Press','Incline DB Press','Lateral Raise','Cable Fly','Chest Fly','Tricep Pushdown','Skull Crusher','Cable Overhead Tri','Dips','Push Up'];
+// ── SUGGESTIONS ───────────────────────────────────────────
+const PUSH_EX = ['Bench Press','Incline Bench Press','Overhead Press','Dumbbell Press','Incline DB Press','Lateral Raise','Cable Fly','Chest Fly','Tricep Pushdown','Skull Crusher','Dips','Push Up'];
 const PULL_EX = ['Deadlift','Barbell Row','Pull Up','Chin Up','Lat Pulldown','Seated Cable Row','Single Arm Row','Face Pull','Bicep Curl','Hammer Curl','Cable Curl','T-Bar Row','Shrug'];
-const LEGS_EX = ['Squat','Front Squat','Leg Press','Romanian Deadlift','Bulgarian Split Squat','Leg Extension','Leg Curl','Calf Raise','Hip Thrust','Goblet Squat','Hack Squat','Lunges','Step Up'];
+const LEGS_EX = ['Squat','Front Squat','Leg Press','Romanian Deadlift','Bulgarian Split Squat','Leg Extension','Leg Curl','Calf Raise','Hip Thrust','Goblet Squat','Hack Squat','Lunges'];
 
 function suggestionsFor(type) {
-  if (type === 'Push') return PUSH_EX;
-  if (type === 'Pull') return PULL_EX;
-  if (type === 'Legs') return LEGS_EX;
+  if (type==='Push') return PUSH_EX;
+  if (type==='Pull') return PULL_EX;
+  if (type==='Legs') return LEGS_EX;
   return [...new Set([...PUSH_EX,...PULL_EX,...LEGS_EX])].sort();
 }
 
-// ═══════════════════════════════════════════
-// LAST SESSION LOOKUP (before a given date)
-// ═══════════════════════════════════════════
-function getLastSession(exerciseName, beforeDate) {
+// ── LAST SESSION LOOKUP ───────────────────────────────────
+function getLastSession(name, beforeDate) {
   const data = load();
-  const dates = Object.keys(data.workouts).filter(d => d < beforeDate).sort().reverse();
+  const dates = Object.keys(data.workouts).filter(d=>d<beforeDate).sort().reverse();
   for (const d of dates) {
-    const w = data.workouts[d];
-    const ex = w.exercises && w.exercises.find(e => e.name === exerciseName);
-    if (ex && ex.sets && ex.sets.some(s => s.w)) return { date: d, sets: ex.sets };
+    const ex = (data.workouts[d].exercises||[]).find(e=>e.name===name);
+    if (ex && ex.sets && ex.sets.some(s=>s.w)) return {date:d, sets:ex.sets};
   }
   return null;
 }
@@ -750,166 +666,146 @@ function getLastSession(exerciseName, beforeDate) {
 function getLastWorkoutOfType(type) {
   const data = load();
   const dates = Object.keys(data.workouts)
-    .filter(d => d < TODAY && data.workouts[d].type === type)
+    .filter(d=>d<TODAY && data.workouts[d].type===type)
     .sort().reverse();
   return dates.length ? data.workouts[dates[0]] : null;
 }
 
-// ═══════════════════════════════════════════
-// CORE EXERCISE RENDERER (used by Today AND History)
-// ═══════════════════════════════════════════
+// ── RENDER EXERCISES (shared by Today + History) ──────────
 function renderExercises(dateStr, containerId) {
   _ad = dateStr;
   _ac = containerId;
-
   const data = load();
   const w = data.workouts[dateStr] || {};
   const container = document.getElementById(containerId);
   if (!container) return;
-
-  if (!w.type || w.type === 'Rest') {
-    // Caller handles this case
-    return;
-  }
 
   const exercises = w.exercises || [];
   let html = '';
 
   exercises.forEach((ex, ei) => {
     const last = getLastSession(ex.name, dateStr);
-    let lastHtml = '';
+    let lastHtml = last
+      ? `<div class="last-session">
+           <div class="last-session-label">Last &middot; ${fmtDate(last.date)}</div>
+           <div class="last-sets-row">${last.sets.filter(s=>s.w).map((s,i)=>`<span class="last-chip">Set ${i+1}: ${s.w} lbs &times; ${s.r}</span>`).join('')}</div>
+         </div>`
+      : `<div class="first-time-badge">&#10022; First time &mdash; make it count</div>`;
 
-    if (last) {
-      const chips = last.sets.filter(s => s.w).map((s, i) =>
-        `<span class="last-chip">Set ${i+1}: ${s.w} lbs × ${s.r}</span>`
-      ).join('');
-      lastHtml = `
-        <div class="last-session">
-          <div class="last-session-label">Last · ${fmtDate(last.date)}</div>
-          <div class="last-sets-row">${chips}</div>
-        </div>`;
-    } else {
-      lastHtml = `<div class="first-time-badge">✦ First time — make it count</div>`;
-    }
-
-    const sets = ex.sets && ex.sets.length ? ex.sets : [{ w:'', r:'' }];
-    const setsHtml = sets.map((s, si) => {
-      const phW = last ? (last.sets[si] || last.sets.at(-1) || {}).w || '' : '';
-      const phR = last ? (last.sets[si] || last.sets.at(-1) || {}).r || '' : '';
-      return `
-        <div class="set-row">
-          <span class="set-label">Set ${si+1}</span>
-          <div class="set-inputs">
-            <input class="set-input" type="number" inputmode="decimal" autocomplete="off"
-              placeholder="${phW || '—'}" value="${s.w || ''}"
-              onchange="setVal(${ei},${si},'w',this.value)" onfocus="this.select()">
-            <span class="set-unit">lbs</span>
-            <span class="set-sep">×</span>
-            <input class="set-input" type="number" inputmode="numeric" autocomplete="off"
-              placeholder="${phR || '—'}" value="${s.r || ''}"
-              onchange="setVal(${ei},${si},'r',this.value)" onfocus="this.select()">
-            <span class="set-unit">reps</span>
-          </div>
-          <button class="set-del" onclick="delSet(${ei},${si})">×</button>
-        </div>`;
+    const sets = (ex.sets && ex.sets.length) ? ex.sets : [{w:'',r:''}];
+    const setsHtml = sets.map((s,si) => {
+      const phW = last ? ((last.sets[si]||last.sets.at(-1)||{}).w||'') : '';
+      const phR = last ? ((last.sets[si]||last.sets.at(-1)||{}).r||'') : '';
+      return `<div class="set-row">
+        <span class="set-label">Set ${si+1}</span>
+        <div class="set-inputs">
+          <input class="set-input" type="number" inputmode="decimal" autocomplete="off"
+            placeholder="${phW||'&#8212;'}" value="${s.w||''}"
+            onchange="setVal(${ei},${si},'w',this.value)" onfocus="this.select()">
+          <span class="set-unit">lbs</span>
+          <span class="set-sep">&times;</span>
+          <input class="set-input" type="number" inputmode="numeric" autocomplete="off"
+            placeholder="${phR||'&#8212;'}" value="${s.r||''}"
+            onchange="setVal(${ei},${si},'r',this.value)" onfocus="this.select()">
+          <span class="set-unit">reps</span>
+        </div>
+        <button class="set-del" onclick="delSet(${ei},${si})">&#215;</button>
+      </div>`;
     }).join('');
 
-    html += `
-      <div class="exercise-card">
-        <div class="exercise-header">
-          <div class="exercise-name">${ex.name}</div>
-          <div class="exercise-actions">
-            <button class="icon-btn" title="Rename" onclick="openRename(${ei})">✏️</button>
-            <button class="icon-btn" title="Delete" onclick="delExercise(${ei})">🗑</button>
-          </div>
+    html += `<div class="exercise-card">
+      <div class="exercise-header">
+        <div class="exercise-name">${ex.name}</div>
+        <div class="exercise-actions">
+          <button class="icon-btn" onclick="openRename(${ei})">&#9999;&#65039;</button>
+          <button class="icon-btn" onclick="delExercise(${ei})">&#128465;</button>
         </div>
-        ${lastHtml}
-        <div class="divider"></div>
-        <div class="sets-container">${setsHtml}</div>
-        <button class="add-set-btn" onclick="addSet(${ei})">＋ Add Set</button>
-      </div>`;
+      </div>
+      ${lastHtml}
+      <div class="divider"></div>
+      <div class="sets-container">${setsHtml}</div>
+      <button class="add-set-btn" onclick="addSet(${ei})">&#xFF0B; Add Set</button>
+    </div>`;
   });
 
-  html += `<button class="add-exercise-btn" onclick="openAddSheet()">＋ Add Exercise</button>`;
+  html += `<button class="add-exercise-btn" onclick="openAddSheet()">&#xFF0B; Add Exercise</button>`;
   container.innerHTML = html;
 }
 
-// ═══════════════════════════════════════════
-// RENDER TODAY TAB
-// ═══════════════════════════════════════════
+// ── RENDER TODAY ──────────────────────────────────────────
 function renderToday() {
   const data = load();
   const w = data.workouts[TODAY] || {};
 
   document.getElementById('today-date').textContent =
-    new Date().toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' });
+    new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
 
   document.querySelectorAll('.split-btn').forEach(btn => {
     btn.className = 'split-btn';
-    if (w.type && btn.dataset.type === w.type)
-      btn.classList.add('active-' + w.type.toLowerCase());
+    if (w.type && btn.dataset.type===w.type) btn.classList.add('active-'+w.type.toLowerCase());
   });
 
   const content = document.getElementById('today-content');
 
   if (!w.type) {
-    content.innerHTML = `
-      <div class="centered-state">
-        <span class="state-icon">💪</span>
-        <div class="state-title">Pick your split above</div>
-        <div class="state-sub">Your last session's exercises will load automatically.</div>
-      </div>`;
+    content.innerHTML = `<div class="centered-state">
+      <span class="state-icon">&#x1F4AA;</span>
+      <div class="state-title">Pick your split above</div>
+      <div class="state-sub">Your last session's exercises will load automatically.</div>
+    </div>`;
     return;
   }
 
-  if (w.type === 'Rest') {
-    content.innerHTML = `
-      <div class="centered-state">
-        <span class="state-icon">😴</span>
-        <div class="state-title">Rest Day</div>
-        <div class="state-sub">Muscles grow when you're not lifting.<br>Sleep, eat, recover.</div>
-      </div>`;
+  if (w.type==='Rest') {
+    content.innerHTML = `<div class="centered-state">
+      <span class="state-icon">&#x1F634;</span>
+      <div class="state-title">Rest Day</div>
+      <div class="state-sub">Muscles grow when you're not lifting.<br>Sleep, eat, recover.</div>
+    </div>`;
     return;
   }
 
   renderExercises(TODAY, 'today-content');
 }
 
-// ═══════════════════════════════════════════
-// SELECT SPLIT TYPE (Today only)
-// ═══════════════════════════════════════════
+// ── SELECT SPLIT TYPE ─────────────────────────────────────
 function selectType(type) {
   const data = load();
-  if (!data.workouts[TODAY]) data.workouts[TODAY] = { exercises: [] };
+  if (!data.workouts[TODAY]) data.workouts[TODAY] = {exercises:[]};
 
-  const prev = data.workouts[TODAY].type;
   data.workouts[TODAY].type = type;
 
-  if (type !== 'Rest' && type !== prev) {
+  if (type !== 'Rest') {
     const existing = data.workouts[TODAY].exercises || [];
-    if (existing.length === 0) {
+    // Only replace exercises if no weights have been logged yet
+    const hasWeights = existing.some(ex => ex.sets && ex.sets.some(s => s.w && s.w !== ''));
+    if (!hasWeights) {
       const lastW = getLastWorkoutOfType(type);
-      if (lastW && lastW.exercises) {
-        data.workouts[TODAY].exercises = lastW.exercises.map(ex => ({
-          name: ex.name,
-          sets: [{ w:'', r:'' }]
-        }));
-      }
+      data.workouts[TODAY].exercises = lastW && lastW.exercises
+        ? lastW.exercises.map(ex => ({name:ex.name, sets:[{w:'',r:''}]}))
+        : [];
     }
+  } else {
+    // Switching to Rest — only clear if nothing logged
+    const existing = data.workouts[TODAY].exercises || [];
+    const hasWeights = existing.some(ex => ex.sets && ex.sets.some(s => s.w && s.w !== ''));
+    if (!hasWeights) data.workouts[TODAY].exercises = [];
   }
 
   save(data);
   renderToday();
 }
 
-// ═══════════════════════════════════════════
-// MUTATIONS (use _ad / _ac so they work for any date)
-// ═══════════════════════════════════════════
+// ── MUTATIONS (work on _ad, re-render _ac) ─────────────────
+function rerender() {
+  if (_ad === TODAY) renderToday(); else renderHistDetail(_ad);
+}
+
 function setVal(ei, si, field, val) {
   const data = load();
   const ex = data.workouts[_ad] && data.workouts[_ad].exercises[ei];
   if (!ex) return;
-  if (!ex.sets[si]) ex.sets[si] = { w:'', r:'' };
+  if (!ex.sets[si]) ex.sets[si] = {w:'',r:''};
   ex.sets[si][field] = val;
   save(data);
 }
@@ -918,10 +814,9 @@ function addSet(ei) {
   const data = load();
   const ex = data.workouts[_ad] && data.workouts[_ad].exercises[ei];
   if (!ex) return;
-  const last = ex.sets && ex.sets.at(-1) || { w:'', r:'' };
-  ex.sets.push({ w: last.w, r: last.r });
-  save(data);
-  if (_ad === TODAY) renderToday(); else renderHistDetail(_ad);
+  const last = (ex.sets && ex.sets.at(-1)) || {w:'',r:''};
+  ex.sets.push({w:last.w, r:last.r});
+  save(data); rerender();
 }
 
 function delSet(ei, si) {
@@ -929,9 +824,8 @@ function delSet(ei, si) {
   const ex = data.workouts[_ad] && data.workouts[_ad].exercises[ei];
   if (!ex) return;
   ex.sets.splice(si, 1);
-  if (!ex.sets.length) ex.sets = [{ w:'', r:'' }];
-  save(data);
-  if (_ad === TODAY) renderToday(); else renderHistDetail(_ad);
+  if (!ex.sets.length) ex.sets = [{w:'',r:''}];
+  save(data); rerender();
 }
 
 function delExercise(ei) {
@@ -939,13 +833,10 @@ function delExercise(ei) {
   const w = data.workouts[_ad];
   if (!w) return;
   w.exercises.splice(ei, 1);
-  save(data);
-  if (_ad === TODAY) renderToday(); else renderHistDetail(_ad);
+  save(data); rerender();
 }
 
-// ═══════════════════════════════════════════
-// ADD EXERCISE SHEET
-// ═══════════════════════════════════════════
+// ── ADD EXERCISE SHEET ────────────────────────────────────
 let _chips = [];
 
 function openAddSheet() {
@@ -963,9 +854,8 @@ function filterChips(val) {
 }
 
 function renderChips(list) {
-  document.getElementById('chip-grid').innerHTML = list.slice(0,12).map(s =>
-    `<div class="chip" onclick="pickChip('${s.replace(/'/g,"\\'")}')">${s}</div>`
-  ).join('');
+  document.getElementById('chip-grid').innerHTML = list.slice(0,12)
+    .map(s=>`<div class="chip" onclick="pickChip('${s.replace(/'/g,"\\'")}')">${s}</div>`).join('');
 }
 
 function pickChip(name) { document.getElementById('add-input').value = name; }
@@ -974,17 +864,15 @@ function confirmAdd() {
   const name = document.getElementById('add-input').value.trim();
   if (!name) return;
   const data = load();
-  if (!data.workouts[_ad]) data.workouts[_ad] = { exercises: [] };
+  if (!data.workouts[_ad]) data.workouts[_ad] = {exercises:[]};
   data.workouts[_ad].exercises = data.workouts[_ad].exercises || [];
-  data.workouts[_ad].exercises.push({ name, sets: [{ w:'', r:'' }] });
+  data.workouts[_ad].exercises.push({name, sets:[{w:'',r:''}]});
   save(data);
   closeOverlay('add-overlay');
-  if (_ad === TODAY) renderToday(); else renderHistDetail(_ad);
+  rerender();
 }
 
-// ═══════════════════════════════════════════
-// RENAME EXERCISE SHEET
-// ═══════════════════════════════════════════
+// ── RENAME SHEET ──────────────────────────────────────────
 let _renameIdx = -1;
 
 function openRename(ei) {
@@ -994,103 +882,89 @@ function openRename(ei) {
   if (!ex) return;
   document.getElementById('rename-input').value = ex.name;
   openOverlay('rename-overlay');
-  setTimeout(() => {
-    const inp = document.getElementById('rename-input');
-    inp.focus(); inp.select();
-  }, 200);
+  setTimeout(() => { const i=document.getElementById('rename-input'); i.focus(); i.select(); }, 200);
 }
 
 function confirmRename() {
   const name = document.getElementById('rename-input').value.trim();
-  if (!name || _renameIdx < 0) return;
+  if (!name || _renameIdx<0) return;
   const data = load();
   const ex = data.workouts[_ad] && data.workouts[_ad].exercises[_renameIdx];
   if (!ex) return;
   ex.name = name;
   save(data);
   closeOverlay('rename-overlay');
-  if (_ad === TODAY) renderToday(); else renderHistDetail(_ad);
+  rerender();
 }
 
-// ═══════════════════════════════════════════
-// OVERLAY HELPERS
-// ═══════════════════════════════════════════
+// ── OVERLAYS ──────────────────────────────────────────────
 function openOverlay(id)  { document.getElementById(id).classList.remove('hidden'); }
 function closeOverlay(id) { document.getElementById(id).classList.add('hidden'); }
 function overlayBgTap(e, id) { if (e.target.classList.contains('overlay')) closeOverlay(id); }
 
-// ═══════════════════════════════════════════
-// CALENDAR
-// ═══════════════════════════════════════════
-let calM = new Date().getMonth();
-let calY = new Date().getFullYear();
-let _selectedDay = null;
+// ── CALENDAR ──────────────────────────────────────────────
+let calM = new Date().getMonth(), calY = new Date().getFullYear(), _sel = null;
 
 function renderCalendar() {
   const data = load();
   document.getElementById('cal-month-label').textContent =
-    new Date(calY, calM).toLocaleDateString('en-US', { month:'long', year:'numeric' });
+    new Date(calY,calM).toLocaleDateString('en-US',{month:'long',year:'numeric'});
 
   const HEADS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  let html = HEADS.map(d => `<div class="cal-head">${d}</div>`).join('');
+  let html = HEADS.map(d=>`<div class="cal-head">${d}</div>`).join('');
 
-  const firstDow = new Date(calY, calM, 1).getDay();
-  const daysInMonth = new Date(calY, calM+1, 0).getDate();
+  const first = new Date(calY,calM,1).getDay();
+  const days  = new Date(calY,calM+1,0).getDate();
 
-  for (let i = 0; i < firstDow; i++) html += `<div class="cal-cell empty"></div>`;
+  for (let i=0;i<first;i++) html+=`<div class="cal-cell empty"></div>`;
 
-  for (let d = 1; d <= daysInMonth; d++) {
-    const ds = `${calY}-${String(calM+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-    const w = data.workouts[ds];
-    const isToday = ds === TODAY;
-    const isFuture = ds > TODAY;
-    const isSelected = ds === _selectedDay;
-    let cls = 'cal-cell';
-    if (w && w.type) cls += ' ' + w.type.toLowerCase();
-    if (isToday) cls += ' today';
-    if (isFuture) cls += ' future';
-    if (isSelected) cls += ' selected';
-    html += `<div class="${cls}" onclick="showDay('${ds}')">${d}</div>`;
+  for (let d=1;d<=days;d++) {
+    const ds=`${calY}-${String(calM+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const w=data.workouts[ds];
+    let cls='cal-cell';
+    if (w && w.type) cls+=' '+w.type.toLowerCase();
+    if (ds===TODAY)  cls+=' today';
+    if (ds>TODAY)    cls+=' future';
+    if (ds===_sel)   cls+=' selected';
+    html+=`<div class="${cls}" onclick="showDay('${ds}')">${d}</div>`;
   }
 
   document.getElementById('cal-grid').innerHTML = html;
 }
 
 function changeMonth(dir) {
-  calM += dir;
-  if (calM > 11) { calM = 0; calY++; }
-  if (calM < 0)  { calM = 11; calY--; }
-  _selectedDay = null;
-  document.getElementById('hist-detail').style.display = 'none';
+  calM+=dir;
+  if (calM>11){calM=0;calY++;} if (calM<0){calM=11;calY--;}
+  _sel=null;
+  document.getElementById('hist-detail').style.display='none';
   renderCalendar();
 }
 
 function showDay(ds) {
-  _selectedDay = ds;
-  renderCalendar(); // re-render to show selection ring
+  _sel = ds;
+  renderCalendar();
 
   const data = load();
   const w = data.workouts[ds];
   const detail = document.getElementById('hist-detail');
-
-  // Always show the panel — even empty days get a header
   detail.style.display = 'block';
 
-  const d = new Date(ds + 'T12:00:00');
+  const d = new Date(ds+'T12:00:00');
   document.getElementById('hist-detail-title').textContent =
-    d.toLocaleDateString('en-US', { weekday:'short', month:'long', day:'numeric' });
+    d.toLocaleDateString('en-US',{weekday:'short',month:'long',day:'numeric'});
 
   const badge = document.getElementById('hist-type-badge');
-  const typeColors = { Push:'var(--push)', Pull:'var(--pull)', Legs:'var(--legs)', Rest:'var(--rest)' };
+  const colors = {Push:'var(--push)',Pull:'var(--pull)',Legs:'var(--legs)',Rest:'var(--rest)'};
   if (w && w.type) {
-    badge.textContent = w.type;
-    badge.style.color = typeColors[w.type] || 'var(--text2)';
-    badge.style.display = '';
+    badge.textContent=w.type; badge.style.color=colors[w.type]||'var(--text2)'; badge.style.display='';
   } else {
-    badge.style.display = 'none';
+    badge.style.display='none';
   }
 
   renderHistDetail(ds);
+
+  // Auto-scroll so user doesn't have to hunt for the detail panel
+  setTimeout(() => detail.scrollIntoView({behavior:'smooth', block:'nearest'}), 50);
 }
 
 function renderHistDetail(ds) {
@@ -1099,135 +973,85 @@ function renderHistDetail(ds) {
   const content = document.getElementById('hist-content');
 
   if (!w || !w.type) {
-    content.innerHTML = `
-      <div style="color:var(--text2);font-size:14px;padding:8px 0">
-        No workout logged for this day.
-      </div>`;
+    content.innerHTML=`<div style="color:var(--text2);font-size:14px;padding:8px 0">No workout logged for this day.</div>`;
     return;
   }
-
-  if (w.type === 'Rest') {
-    content.innerHTML = `<div style="color:var(--text2);font-size:14px;padding:8px 0">Rest day 😴</div>`;
+  if (w.type==='Rest') {
+    content.innerHTML=`<div style="color:var(--text2);font-size:14px;padding:8px 0">Rest day &#x1F634;</div>`;
     return;
   }
-
-  // Render editable exercises
   renderExercises(ds, 'hist-content');
 }
 
-// ═══════════════════════════════════════════
-// PROGRESS
-// ═══════════════════════════════════════════
+// ── PROGRESS ──────────────────────────────────────────────
 let _chart = null;
 
 function populateProgressSelect() {
   const data = load();
   const names = new Set();
-  Object.values(data.workouts).forEach(w => (w.exercises||[]).forEach(ex => names.add(ex.name)));
+  Object.values(data.workouts).forEach(w=>(w.exercises||[]).forEach(ex=>names.add(ex.name)));
   const sel = document.getElementById('prog-select');
   const cur = sel.value;
-  sel.innerHTML = '<option value="">Select an exercise…</option>';
-  [...names].sort().forEach(n => {
-    sel.innerHTML += `<option value="${n}" ${n===cur?'selected':''}>${n}</option>`;
-  });
+  sel.innerHTML = '<option value="">Select an exercise...</option>';
+  [...names].sort().forEach(n=>{sel.innerHTML+=`<option value="${n}" ${n===cur?'selected':''}>${n}</option>`;});
 }
 
 function renderProgress() {
   const name = document.getElementById('prog-select').value;
   const data = load();
-
-  document.getElementById('prog-stats').innerHTML = '';
-  document.getElementById('prog-empty').style.display = 'none';
-  if (_chart) { _chart.destroy(); _chart = null; }
+  document.getElementById('prog-stats').innerHTML='';
+  document.getElementById('prog-empty').style.display='none';
+  if (_chart) { _chart.destroy(); _chart=null; }
   if (!name) return;
 
-  const pts = [];
-  Object.entries(data.workouts)
-    .sort(([a],[b]) => a < b ? -1 : 1)
-    .forEach(([date, w]) => {
-      const ex = (w.exercises||[]).find(e => e.name === name);
-      if (ex) {
-        const top = Math.max(...(ex.sets||[]).map(s => parseFloat(s.w)||0));
-        if (top > 0) pts.push({ label: fmtDate(date), weight: top });
-      }
-    });
-
-  if (!pts.length) {
-    document.getElementById('prog-empty').style.display = 'block';
-    return;
-  }
-
-  const ctx = document.getElementById('prog-chart').getContext('2d');
-  _chart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: pts.map(p => p.label),
-      datasets: [{
-        data: pts.map(p => p.weight),
-        borderColor: '#3b82f6',
-        backgroundColor: 'rgba(59,130,246,0.12)',
-        fill: true,
-        tension: 0.35,
-        pointRadius: 5,
-        pointBackgroundColor: '#3b82f6',
-        pointBorderColor: '#0f0f0f',
-        pointBorderWidth: 2,
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { display: false },
-        tooltip: { callbacks: { label: ctx => `${ctx.parsed.y} lbs` } }
-      },
-      scales: {
-        x: { ticks: { color:'#8e8e93', font:{size:11} }, grid:{color:'#2c2c2e'} },
-        y: { ticks: { color:'#8e8e93', font:{size:11}, callback: v => v+' lbs' }, grid:{color:'#2c2c2e'} }
-      }
+  const pts=[];
+  Object.entries(data.workouts).sort(([a],[b])=>a<b?-1:1).forEach(([date,w])=>{
+    const ex=(w.exercises||[]).find(e=>e.name===name);
+    if (ex) {
+      const top=Math.max(...(ex.sets||[]).map(s=>parseFloat(s.w)||0));
+      if (top>0) pts.push({label:fmtDate(date),weight:top});
     }
   });
 
-  const weights = pts.map(p => p.weight);
-  const gain = weights.at(-1) - weights[0];
-  document.getElementById('prog-stats').innerHTML = `
-    <div class="stat-box">
-      <div class="stat-val">${Math.max(...weights)}</div>
-      <div class="stat-lbl">Best (lbs)</div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-val">${weights.at(-1)}</div>
-      <div class="stat-lbl">Recent (lbs)</div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-val" style="color:${gain>=0?'var(--legs)':'var(--pull)'}">${gain>=0?'+':''}${gain}</div>
-      <div class="stat-lbl">Total Gain</div>
-    </div>`;
+  if (!pts.length) { document.getElementById('prog-empty').style.display='block'; return; }
+
+  const ctx=document.getElementById('prog-chart').getContext('2d');
+  _chart=new Chart(ctx,{
+    type:'line',
+    data:{
+      labels:pts.map(p=>p.label),
+      datasets:[{data:pts.map(p=>p.weight),borderColor:'#3b82f6',backgroundColor:'rgba(59,130,246,0.12)',
+        fill:true,tension:0.35,pointRadius:5,pointBackgroundColor:'#3b82f6',pointBorderColor:'#0f0f0f',pointBorderWidth:2}]
+    },
+    options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.parsed.y} lbs`}}},
+      scales:{x:{ticks:{color:'#8e8e93',font:{size:11}},grid:{color:'#2c2c2e'}},
+              y:{ticks:{color:'#8e8e93',font:{size:11},callback:v=>v+' lbs'},grid:{color:'#2c2c2e'}}}}
+  });
+
+  const weights=pts.map(p=>p.weight), gain=weights.at(-1)-weights[0];
+  document.getElementById('prog-stats').innerHTML=`
+    <div class="stat-box"><div class="stat-val">${Math.max(...weights)}</div><div class="stat-lbl">Best (lbs)</div></div>
+    <div class="stat-box"><div class="stat-val">${weights.at(-1)}</div><div class="stat-lbl">Recent (lbs)</div></div>
+    <div class="stat-box"><div class="stat-val" style="color:${gain>=0?'var(--legs)':'var(--pull)'}">${gain>=0?'+':''}${gain}</div><div class="stat-lbl">Total Gain</div></div>`;
 }
 
-// ═══════════════════════════════════════════
-// TABS
-// ═══════════════════════════════════════════
+// ── TABS ──────────────────────────────────────────────────
 function switchTab(name, btn) {
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('panel-' + name).classList.add('active');
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
   btn.classList.add('active');
-  // Reset active context to Today when leaving history
-  if (name !== 'history') { _ad = TODAY; _ac = 'today-content'; }
-  if (name === 'history') renderCalendar();
-  if (name === 'progress') { populateProgressSelect(); renderProgress(); }
+  if (name!=='history') { _ad=TODAY; _ac='today-content'; }
+  if (name==='history') renderCalendar();
+  if (name==='progress') { populateProgressSelect(); renderProgress(); }
 }
 
-// ═══════════════════════════════════════════
-// SERVICE WORKER
-// ═══════════════════════════════════════════
+// ── SERVICE WORKER ────────────────────────────────────────
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+  window.addEventListener('load', ()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
 }
 
-// ═══════════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════════
+// ── INIT ──────────────────────────────────────────────────
 renderToday();
 </script>
 </body>
